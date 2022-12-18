@@ -1,0 +1,9 @@
+sqlite3
+requests
+tqdm
+bs4
+pandas
+pymorphy2
+nltk
+sklearn
+gensim
