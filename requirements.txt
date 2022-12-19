@@ -1,4 +1,4 @@
-sqlite3
+pysqlite
 requests
 tqdm
 bs4
@@ -7,3 +7,5 @@ pymorphy2
 nltk
 sklearn
 gensim
+uvicorn
+gunicorn
