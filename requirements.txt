@@ -8,3 +8,4 @@ nltk
 sklearn
 gensim
 uvicorn
+fastapi
