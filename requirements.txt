@@ -1,4 +1,3 @@
-pysqlite
 requests
 tqdm
 bs4
