@@ -1,3 +1,4 @@
+gunicorn
 requests
 tqdm
 bs4
@@ -7,4 +8,3 @@ nltk
 sklearn
 gensim
 uvicorn
-gunicorn
