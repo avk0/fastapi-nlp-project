@@ -1,10 +1,5 @@
 gunicorn
 requests
 tqdm
-bs4
-pandas
-pymorphy2
-sklearn
-gensim
 uvicorn
 fastapi
