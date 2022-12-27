@@ -1,3 +1,5 @@
+""" Module that tokenizes descriptions and saves to database. """
+
 import re
 import sqlite3
 import pandas as pd
@@ -5,8 +7,8 @@ import pymorphy2
 from nltk.corpus import stopwords
 
 
-DB_NAME = "descriptions1.db"
-IN_TABLE = 'hh_descriptions'
+DB_NAME = "descriptions2.db"
+IN_TABLE = 'hh_descriptions' 
 OUT_TABLE = 'hh_tokens'
 
 
@@ -14,7 +16,7 @@ def tokenize(s):
     morph = pymorphy2.MorphAnalyzer()
     tokens = re.findall("[\/\-а-яёa-z]+", s.lower())
     filtered = [morph.parse(i)[0].normal_form for i in tokens if i not in stopwords.words("russian")]  # нормализация - лемматизация
-    return ' '.join(filtered)
+    return filtered
 
 
 def preprocess_data(con, in_table_name, out_table_name):
@@ -29,10 +31,10 @@ def preprocess_data(con, in_table_name, out_table_name):
     con.commit()
         
     df = pd.read_sql_query(f"SELECT * FROM {in_table_name}", con)
-    print(df.size)
+    print(df.shape)
     df_tokens = df.copy()
-    df_tokens['tokens'] = df_tokens.apply(lambda row: tokenize(row['description']), axis=1)   # 9min 15s
-    print(df_tokens.size)
+    df_tokens['tokens'] = df_tokens.apply(lambda row: ' '.join(tokenize(row['description'])), axis=1)   # 9min 15s
+    print(df_tokens.shape)
     df_tokens.to_sql(out_table_name, con, if_exists='replace')
 
 

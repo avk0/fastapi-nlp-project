@@ -1,9 +1,7 @@
 """ Scraping vacancies from hh.ru.
 
 As argument use word or phrase in double quotes.
-Saves results to sqlite database
-
-"""
+Saves results to sqlite database. """
 
 
 import datetime
@@ -19,7 +17,7 @@ from bs4 import BeautifulSoup
 PAGES_BATCH_SIZE = 20  # PAGES_BATCH_SIZE*PER_PAGE should be <2000
 PER_PAGE = 100
 FETCH_FOR_DAYS = 365
-DB_NAME = "descriptions1.db"
+DB_NAME = "descriptions2.db"
 
 
 
@@ -72,16 +70,19 @@ def scrape(phrase_to_search, con):
         #print(vac_id)
         try:
             vac_res = ses.get(f'https://api.hh.ru/vacancies/{vac_id}')
-            title = BeautifulSoup(vac_res.json()['name'], "html.parser").get_text()
-            description = BeautifulSoup(vac_res.json()['description'], "html.parser").get_text()
+            title = BeautifulSoup(vac_res.json()['name'], "html.parser").get_text().replace('"','')
+            description = BeautifulSoup(vac_res.json()['description'], "html.parser").get_text().replace('"','')
             skills = vac_res.json()['key_skills']
-            skills_list = [i['name'] for i in skills]
+            skills_list = [i['name'].replace('"','') for i in skills]
             vac_url = vac_res.json()['alternate_url']
             cur.execute(f"""INSERT INTO hh_descriptions VALUES ("{vac_id}", "{title}", "{description}", "{repr(skills_list)}", "{vac_url}")""")
             con.commit()
         except Exception as e:
             print('Error on:', vac_id)
             print("Error message:", e)
+            print(title)
+            print(description)
+            print(skills_list)
 
         time.sleep(random.random())  # not to overload the server
 
@@ -96,9 +97,9 @@ if __name__ == '__main__':
             descriptions = scrape(phrase_to_search, con)
 
             res = con.cursor().execute("SELECT * FROM hh_descriptions LIMIT 5")
-            print(res.fetchall())
+            print(type(res.fetchall()))
             res = con.cursor().execute("SELECT COUNT(*) FROM hh_descriptions")
-            print(res.fetchall())
+            print(type(res.fetchall()))
         finally:
             con.close()
         

@@ -1,5 +1,0 @@
-gunicorn
-requests
-tqdm
-uvicorn
-fastapi
